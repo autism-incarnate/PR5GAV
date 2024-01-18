@@ -21,12 +21,6 @@ public class StepDefs {
     private PageManager pm = PageManager.getPageManagerInstance();
 
     private ResultSet resSet;
-
-    @Given("test environment page opened")
-    public void test_environment_page_opened() {
-        Page cp = pm.getHomeInstance();
-        cp.assertPageTitle("Главная", "QualIT");
-    }
     @Given("^element visible \"([^\"]*)\"$")
     public void element_visible(String a) {
         Page cp = pm.getCurrentPage();

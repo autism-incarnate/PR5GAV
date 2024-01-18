@@ -46,5 +46,5 @@ Feature: Adding item to the table
     Examples:
     | string | type | checkbox |
     | !Яблоко1 | VEGETABLE | false |
-    | ^_^      | FRUIT     | false  |
+    | ^_^      | FRUIT     | true  |
 

@@ -2,7 +2,6 @@ package framework.managers;
 
 import framework.util.Props;
 import framework.util.FoodType;
-import io.qameta.allure.Step;
 
 import java.sql.*;
 
@@ -49,7 +48,6 @@ public class DBManager {
         return dbMan_ref;
     }
 
-    @Step("Getting DB contents as ResultSet")
     public ResultSet getContents() {
         try {
             PreparedStatement getAll = conn.prepareStatement(selectQuery);
@@ -59,7 +57,6 @@ public class DBManager {
         return null;
     }
 
-    @Step("Inserting row to DB with values: {name}, {type}, {exotic}")
     public boolean insertRow(String name, FoodType type, Boolean exotic) {
         try {
             PreparedStatement insertRow = conn.prepareStatement(insertQuery);

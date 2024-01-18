@@ -1,7 +1,5 @@
 package framework.pages;
 
-import io.qameta.allure.Step;
-import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
@@ -29,7 +27,7 @@ public class PageGoods extends BasePage implements Page {
             elementMap.put("Тип", "//select[@id='type']");
             elementMap.put("Чекбокс", "//input[@type='checkbox']");
             elementMap.put("Сохранить", "//button[@id='save']");
-            elementMap.put("Таблица", "//div[@class='container-fluid']/table/tbody");
+            elementMap.put("Таблица", "//table/tbody");
 
             initTableUI = uiParseTable();
             currentTableUI = uiParseTable();
@@ -64,18 +62,22 @@ public class PageGoods extends BasePage implements Page {
 
 
     //Adding a new item, then performing some checks
-    @Step("Fill item with values {name}, {objType}, {exotic} in modal window")
     public void fillItem(String name, FoodType objType, boolean exotic) {
 
         WebElement inputName = getElementByString("Наименование");
         Select dropdown = new Select(getElementByString("Тип"));
+        WebElement checkbox = getElementByString("Чекбокс");
 
         fillInput(name, inputName);
 
         dropdown.selectByValue(objType.getFruitNameEng());
+
+        if(!checkbox.isSelected() && exotic)
+            checkbox.click();
+        else if (checkbox.isSelected() && !exotic)
+            checkbox.click();
     }
 
-    @Step("Validate fields")
     public void validateItem(String name, FoodType objType, boolean exotic) {
         Select dropdown = new Select(getElementByString("Тип"));
         WebElement modalCheckBox = getElementByString("Чекбокс");

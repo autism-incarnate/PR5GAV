@@ -1,6 +1,5 @@
 package framework.pages;
 
-import io.qameta.allure.Step;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -10,7 +9,6 @@ import framework.managers.WebDriverManager;
 import framework.managers.PageManager;
 import org.junit.jupiter.api.Assertions;
 
-import java.sql.DriverManager;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,13 +27,11 @@ public class BasePage implements Page {
     protected Map<String, String> elementMap = new HashMap<String, String>();
 
 
-    @Step("Fill input field {e} with string {text}")
     public void fillInput(String text, WebElement e) {
         waitForClickable(e).click();
         e.sendKeys(text);
     }
 
-    @Step("Compare string to {e} - text")
     public void compareText(String text, WebElement e) {
         Assertions.assertEquals(text, e.getText(), "Element's text is different from string provided!");
     }
@@ -44,7 +40,6 @@ public class BasePage implements Page {
         Assertions.assertEquals(a, b, "Element's text is different from string provided!");
     }
 
-    @Step("Verify that the page has loaded by matching {e} element title to {expected} string")
     public void assertPageTitle(WebElement e, String title) {
         Assertions.assertEquals(e.getText(), title,
                 "Invalid page title / Incorrect page opened");
@@ -60,22 +55,23 @@ public class BasePage implements Page {
         elementMap.put(key, xpath);
     }
 
-    @Step("Wait for element {e} to become clickable")
     public WebElement waitForClickable(String name ) {
         WebElement e = webDriverManager.getDriver().findElement(By.xpath(elementMap.get(name)));
         return wait.until(ExpectedConditions.elementToBeClickable(e)); }
 
-    @Step("Wait for element {e} to become clickable")
     public WebElement waitForClickable(WebElement e) {
         return wait.until(ExpectedConditions.elementToBeClickable(e)); }
 
-    @Step("Wait for element {e} to become visible")
     public WebElement waitForVisible(String name) {
-        WebElement e = stubbornWait(name);
-        return e;
+        try {
+            WebElement e = getElementByString(name);
+            return e;
+        } catch(StaleElementReferenceException n) {
+            WebElement e = stubbornWait(name);
+            return e;
+        }
     }
 
-    @Step("Wait for element {e} to become visible")
     public WebElement waitForVisible(WebElement e) {
         return wait.until(ExpectedConditions.visibilityOf(e));
     }
@@ -90,8 +86,8 @@ public class BasePage implements Page {
 
     public WebElement stubbornWait(String name) {
         Wait<WebDriver> stubbornWait = new FluentWait<WebDriver>(webDriverManager.getDriver())
-                .withTimeout(Duration.ofSeconds(99999999))
-                .pollingEvery(Duration.ofSeconds(999999))
+                .withTimeout(Duration.ofSeconds(90))
+                .pollingEvery(Duration.ofSeconds(15))
                 .ignoring(NoSuchElementException.class)
                 .ignoring(StaleElementReferenceException.class);
 

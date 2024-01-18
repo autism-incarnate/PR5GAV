@@ -3,6 +3,8 @@ package framework.managers;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import static framework.util.Props.DRIVER_PATH;
+
 public class WebDriverManager {
     private static WebDriverManager driver_ref = null;
 
@@ -24,7 +26,7 @@ public class WebDriverManager {
     }
 
     private void initDriver() {
-        System.setProperty("webdriver.chrome.driver", "C:\\GIT\\pr5gav\\pr5\\src\\main\\resources\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", PropManager.getPropInstance().getProp(DRIVER_PATH));
         driver = new ChromeDriver();
     }
 

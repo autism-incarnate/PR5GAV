@@ -1,7 +1,6 @@
 package framework.util;
 
 import framework.managers.DBManager;
-import io.qameta.allure.Step;
 import org.junit.jupiter.api.Assertions;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -14,7 +13,6 @@ public class TableComparator {
     //Method for comparing two tables represented as an array of array of strings. It's ugly, I know.
     //boolean expectSizeMatch - flag indicating whether we expect tables to have different amount of rows or not
 
-    @Step("Comparing tables {t1} and {t2}")
     public static boolean compareTables(List<List<String>> t1, List<List<String>> t2, boolean expectSizeMatch) {
         if(t1 == null || t2 == null) {
             Assertions.assertNull(t1,
@@ -27,7 +25,7 @@ public class TableComparator {
         int t1Size = t1.size();
         int t2Size = t2.size();
 
-        if(t1Size <= 0 || t2Size <= 0) {
+        if(t1Size == 0 || t2Size == 0) {
             Assertions.assertEquals(t1Size, 0,
                     "First table is empty! Nothing to compare.");
             Assertions.assertEquals(t2Size, 0,
@@ -40,7 +38,7 @@ public class TableComparator {
         //Switch in case we want to compare only old values, in case they were modified too
         if(t1Size != t2Size && !expectSizeMatch)
             cSize = t1Size < t2Size ? t1Size : t2Size;
-        else if(t1Size != t2Size && expectSizeMatch)
+        else if(t1Size != t2Size)
             return false;
 
         for(int i = 0; i < cSize; i++) {
@@ -77,7 +75,7 @@ public class TableComparator {
     //We convert ResultSet to an object that is 'easier' to work with
     private static List<List<String>> convertToStringArr(ResultSet r) {
         List<List<String>> r_String = new ArrayList<>();
-        int r_Columns = 0;
+        int r_Columns;
         try {
             ResultSetMetaData meta = r.getMetaData();
             r_Columns = meta.getColumnCount();
@@ -116,18 +114,15 @@ public class TableComparator {
         return r_String;
     }
 
-    @Step("Comparing row: {r} to last row in table: {t}")
     public static void compareToLast(List<List<String>> t, List<String> r) {
         Assertions.assertNotNull(t, "Empty table provided");
         Assertions.assertNotNull(r, "Empty string provided");
-        if(t != null && r != null)
-            Assertions.assertEquals(t.get(t.size() - 1), r, "Rows are not the same!");
+        Assertions.assertEquals(t.get(t.size() - 1), r, "Rows are not the same!");
     }
     public static void compareToLast(ResultSet t, List<String> r) {
         compareToLast(convertToStringArr(t), r);
     }
 
-    @Step("Comparing table {t} to current state in BD")
     public void compareToDB(List<List<String>> t, boolean expectSizeMatch) {
         ResultSet r = DBManager.getDBInstance().getContents();
         Assertions.assertTrue(compareTables(t, r, expectSizeMatch),
