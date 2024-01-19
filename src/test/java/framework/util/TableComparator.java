@@ -1,5 +1,6 @@
 package framework.util;
 
+import framework.items.FoodType;
 import framework.managers.DBManager;
 import org.junit.jupiter.api.Assertions;
 import java.sql.ResultSet;

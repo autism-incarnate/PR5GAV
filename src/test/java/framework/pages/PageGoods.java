@@ -3,7 +3,7 @@ package framework.pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
-import framework.util.FoodType;
+import framework.items.FoodType;
 
 import java.util.*;
 

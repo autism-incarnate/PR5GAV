@@ -1,4 +1,6 @@
 @all
+@DB
+
   Feature: Add to DB
 
     @success

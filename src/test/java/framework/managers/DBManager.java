@@ -1,7 +1,7 @@
 package framework.managers;
 
 import framework.util.Props;
-import framework.util.FoodType;
+import framework.items.FoodType;
 
 import java.sql.*;
 

@@ -1,4 +1,6 @@
 @all
+@UI
+
 Feature: Adding item to the table
 
   @success
