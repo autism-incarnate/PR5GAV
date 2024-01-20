@@ -155,7 +155,9 @@ public class StepDefs {
         List<List<String>> n = new ArrayList<>();
         for(Food o : f) {
             List<String> r = new ArrayList<>();
-            r.add(o.getName()); r.add(o.getType()); r.add(String.valueOf(o.getExotic()));
+            r.add(o.getName());
+            r.add(FoodType.getThis(o.getType()).getFruitNameRus());
+            r.add(String.valueOf(o.getExotic()));
             n.add(r);
         }
 
