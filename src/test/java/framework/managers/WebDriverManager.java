@@ -9,13 +9,13 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Map;
 
-import static framework.util.Props.BROWSER_TYPE;
-import static framework.util.Props.DRIVER_PATH;
+import static framework.util.Props.*;
 
 public class WebDriverManager {
     private static WebDriverManager driver_ref = null;
 
     public static WebDriver driver;
+    public static RemoteWebDriver remoteDriver;
     private WebDriverManager() {
     }
 
@@ -26,28 +26,32 @@ public class WebDriverManager {
     }
 
     public WebDriver getDriver() {
-        if(driver==null){
+        if(driver==null && remoteDriver == null){
             initDriver();
         }
-        return driver;
+        if(PropManager.getPropInstance().getProp(DRIVER_TYPE).equals("local"))
+            return driver;
+        if(PropManager.getPropInstance().getProp(DRIVER_TYPE).equals("remote"))
+            return remoteDriver;
+        return null;
     }
 
     private void initDriver() {
-        if(BROWSER_TYPE == "local") {
+        if(PropManager.getPropInstance().getProp(DRIVER_TYPE).equals("local")) {
             System.setProperty("webdriver.chrome.driver", PropManager.getPropInstance().getProp(DRIVER_PATH));
             driver = new ChromeDriver();
         }
-        else if(BROWSER_TYPE == "remote") {
+        else if(PropManager.getPropInstance().getProp(DRIVER_TYPE).equals("remote")) {
             DesiredCapabilities capabilities = new DesiredCapabilities();
-            capabilities.setBrowserName("chrome");
-            capabilities.setVersion("109.0");
+            capabilities.setBrowserName(PropManager.getPropInstance().getProp(BROWSER_TYPE));
+            capabilities.setVersion(PropManager.getPropInstance().getProp(BROWSER_VERSION));
             capabilities.setCapability("selenoid:options", Map.<String, Object>of(
                     "enableVNC", true,
                     "enableVideo", false
             ));
             try {
-                RemoteWebDriver driver = new RemoteWebDriver(
-                        URI.create("http://selenoid:4444/wd/hub").toURL(),
+                remoteDriver = new RemoteWebDriver(
+                        URI.create(PropManager.getPropInstance().getProp(SELEN_URL)).toURL(),
                         capabilities);
             }
             catch (MalformedURLException e) {
@@ -60,6 +64,9 @@ public class WebDriverManager {
         if(driver!=null) {
             driver.quit();
             driver = null;
+        }
+        if(remoteDriver!=null) {
+            remoteDriver.quit();
         }
     }
 
